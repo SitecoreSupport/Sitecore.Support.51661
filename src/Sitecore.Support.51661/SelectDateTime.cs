@@ -1,6 +1,7 @@
 ﻿using Sitecore.Mvc.Presentation;
 using Sitecore.StringExtensions;
 using System.Globalization;
+using Sitecore.Globalization;
 
 namespace Sitecore.Support.ExperienceEditor.Speak.Dialogs
 {
@@ -15,10 +16,11 @@ namespace Sitecore.Support.ExperienceEditor.Speak.Dialogs
       base.Initialize();
       if (this.SelectedDate.Parameters["Format"].IsNullOrEmpty())
       {
-        CultureInfo culture = Context.User.Profile.Culture;
-        if (culture != null && culture.DateTimeFormat != null)
+        string culture = Context.User.Profile.RegionalIsoCode.ToLowerInvariant();
+        CultureInfo currentCulture = Language.CreateCultureInfo(culture, false);
+        if (currentCulture != null)
         {
-          this.SelectedDate.Parameters["Format"] = culture.DateTimeFormat.ShortDatePattern;
+          this.SelectedDate.Parameters["Format"] = currentCulture.DateTimeFormat.ShortDatePattern.ToLowerInvariant();
         }
       }
     }
